@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'hatena/bookmark/restful/v1'
 require 'json'
 
