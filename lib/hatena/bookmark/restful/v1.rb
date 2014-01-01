@@ -33,6 +33,11 @@ class Hatena::Bookmark::Restful::V1
     res.success?
   end
 
+  def create_bookmark(bookmark_params)
+    res = connection.post('/1/my/bookmark', bookmark_params)
+    JSON.parse(res.body)
+  end
+
   private
 
   def connection

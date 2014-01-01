@@ -32,6 +32,64 @@ shared_context "send a HTTP request to API" do
 end
 
 describe Hatena::Bookmark::Restful::V1 do
+  describe "#create_bookmark" do
+    let(:client) { Hatena::Bookmark::Restful::V1.new }
+
+    let(:stubbed_response) {
+      [
+        200,
+        {},
+        JSON.dump(bookmark)
+      ]
+    }
+
+    let(:test_connection) {
+      Faraday.new do |builder|
+        builder.adapter :test do |stubs|
+          stubs.post(api_path) { stubbed_response }
+        end
+      end
+    }
+
+    let(:api_path) { "/1/my/bookmark" }
+
+    let(:request_params) {
+      {
+        url: 'http://www.hatena.ne.jp/',
+        comment: 'おもしろホームページです',
+        tags: %w( hatena ),
+        post_twitter: false,
+        post_facebook: false,
+        post_mixi: false,
+        post_evernote: false,
+        send_mail: false,
+        private: false,
+      }
+    }
+
+    let(:bookmark) {
+      {
+        'comment' => request_params[:comment],
+        'created_datetime' => '2013-12-17T23:58:54+09:00',
+        'created_epoch' => 1387292334,
+        'user' => 'aereal',
+        'permalink' => 'http://b.hatena.ne.jp/aereal/20131217#bookmark-150288466',
+        'private' => false,
+        'tags' => [
+          'hatena',
+        ],
+      }
+    }
+
+    before do
+      allow(client).to receive(:connection).and_return(test_connection)
+    end
+
+    it "successfully create a new bookmark" do
+      expect(client.create_bookmark(request_params)).to eq(bookmark)
+    end
+  end
+
   describe "#delete_bookmark" do
     let(:client) { Hatena::Bookmark::Restful::V1.new }
 
