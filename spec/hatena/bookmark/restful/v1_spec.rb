@@ -36,6 +36,30 @@ shared_examples "a response from API" do
 end
 
 describe Hatena::Bookmark::Restful::V1 do
+  describe "#bookmark" do
+    it_behaves_like "a response from API" do
+      subject { client.bookmark(entry_url) }
+
+      let(:api_path) { "/1/my/bookmark" }
+
+      let(:response_object) {
+        {
+          'comment' => ' Heroku の Deploy Hooks で HipChat がサポートされていた',
+          'created_datetime' => '2013-12-17T23:58:54+09:00',
+          'created_epoch' => 1387292334,
+          'user' => 'aereal',
+          'permalink' => 'http://b.hatena.ne.jp/aereal/20131217#bookmark-150288466',
+          'private' => false,
+          'tags' => [
+            'heroku',
+          ],
+        }
+      }
+
+      let(:entry_url) { "https://devcenter.heroku.com/articles/deploy-hooks" }
+    end
+  end
+
   describe "#entry" do
     it_behaves_like "a response from API" do
       subject { client.entry(entry_url) }

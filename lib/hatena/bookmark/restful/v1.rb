@@ -23,6 +23,11 @@ class Hatena::Bookmark::Restful::V1
     JSON.parse(res.body)
   end
 
+  def bookmark(url)
+    res = connection.get('/1/my/bookmark', url: url)
+    JSON.parse(res.body)
+  end
+
   private
 
   def connection
