@@ -28,6 +28,11 @@ class Hatena::Bookmark::Restful::V1
     JSON.parse(res.body)
   end
 
+  def delete_bookmark(url)
+    res = connection.delete('/1/my/bookmark', url: url)
+    res.success?
+  end
+
   private
 
   def connection

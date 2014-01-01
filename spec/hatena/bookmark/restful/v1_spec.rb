@@ -30,6 +30,38 @@ shared_context "send a HTTP request to API" do
 end
 
 describe Hatena::Bookmark::Restful::V1 do
+  describe "#delete_bookmark" do
+    let(:client) { Hatena::Bookmark::Restful::V1.new }
+
+    let(:stubbed_response) {
+      [
+        204,
+        {},
+        ''
+      ]
+    }
+
+    let(:test_connection) {
+      Faraday.new do |builder|
+        builder.adapter :test do |stubs|
+          stubs.delete(api_path) { stubbed_response }
+        end
+      end
+    }
+
+    let(:api_path) { "/1/my/bookmark" }
+
+    let(:entry_url) { "http://aereal.org/" }
+
+    before do
+      allow(client).to receive(:connection).and_return(test_connection)
+    end
+
+    it "successfully delete a bookmark" do
+      expect(client.delete_bookmark(entry_url)).to be_true
+    end
+  end
+
   describe "#bookmark" do
     include_context "send a HTTP request to API"
 
