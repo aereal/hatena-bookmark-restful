@@ -13,6 +13,11 @@ class Hatena::Bookmark::Restful::V1
     JSON.parse(res.body)
   end
 
+  def my_tags
+    res = connection.get('/1/my/tags')
+    JSON.parse(res.body)
+  end
+
   private
 
   def connection
