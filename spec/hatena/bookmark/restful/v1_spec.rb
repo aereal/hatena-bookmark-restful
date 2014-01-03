@@ -6,8 +6,6 @@ require 'json'
 shared_context "send a HTTP request to API" do
   subject { raise "The example group must give real `subject`" }
 
-  let(:client) { Hatena::Bookmark::Restful::V1.new }
-
   let(:api_path) { raise "The example group must give real `api_path`" }
 
   let(:stubbed_response) {
@@ -32,9 +30,9 @@ shared_context "send a HTTP request to API" do
 end
 
 describe Hatena::Bookmark::Restful::V1 do
-  describe "#create_bookmark" do
-    let(:client) { Hatena::Bookmark::Restful::V1.new }
+  let(:client) { Hatena::Bookmark::Restful::V1.new(consumer_key: '', consumer_secret: '', access_token: '', access_token_secret: '') }
 
+  describe "#create_bookmark" do
     let(:stubbed_response) {
       [
         200,
@@ -91,8 +89,6 @@ describe Hatena::Bookmark::Restful::V1 do
   end
 
   describe "#delete_bookmark" do
-    let(:client) { Hatena::Bookmark::Restful::V1.new }
-
     let(:stubbed_response) {
       [
         204,
