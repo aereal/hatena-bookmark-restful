@@ -1,6 +1,6 @@
 # Hatena::Bookmark::Restful
 
-TODO: Write a gem description
+A client library for [Hatena::Bookmark RESTful API](http://developer.hatena.ne.jp/ja/documents/bookmark/apis/rest).
 
 ## Installation
 
@@ -18,11 +18,28 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+**NOTICE**: You must read and agree to [terms of services (in Japanese)](http://developer.hatena.ne.jp/ja/license) before using the API.
+
+```
+require 'hatena/bookmark/restful/v1'
+CONSUMER_KEY        = 'YOUR_CONSUMER_KEY'
+CONSUMER_SECRET     = 'YOUR_CONSUMER_SECRET'
+ACCESS_TOKEN        = 'YOUR_ACCESS_TOKEN'
+ACCESS_TOKEN_SECRET = 'YOUR_ACCESS_TOKEN_SECRET'
+
+client = Hatena::Bookmark::Restful::V1.new(
+  consumer_key:        CONSUMER_KEY,
+  consumer_secret:     CONSUMER_SECRET,
+  access_token:        ACCESS_TOKEN,
+  access_token_secret: ACCESS_TOKEN_SECRET
+)
+
+client.bookmark('http://www.hatena.ne.jp/')
+```
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/hatena-bookmark-restful/fork )
+1. Fork it ( http://github.com/aereal/hatena-bookmark-restful/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
