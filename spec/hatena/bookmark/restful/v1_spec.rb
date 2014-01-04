@@ -30,14 +30,15 @@ shared_context "send a HTTP request to API" do
 end
 
 describe Hatena::Bookmark::Restful::V1 do
-  let(:client) { Hatena::Bookmark::Restful::V1.new(consumer_key: '', consumer_secret: '', access_token: '', access_token_secret: '') }
+  let(:credentials) { Hatena::Bookmark::Restful::V1::Credentials.new(consumer_key: '', consumer_secret: '', access_token: '', access_token_secret: '') }
+  let(:client) { Hatena::Bookmark::Restful::V1.new(credentials) }
 
   describe "#create_bookmark" do
     let(:stubbed_response) {
       [
         200,
         {},
-        JSON.dump(bookmark)
+        JSON.dump(bookmark.to_hash)
       ]
     }
 
@@ -66,17 +67,15 @@ describe Hatena::Bookmark::Restful::V1 do
     }
 
     let(:bookmark) {
-      {
+      Hatena::Bookmark::Restful::V1::Bookmark.new_from_response(
         'comment' => request_params[:comment],
         'created_datetime' => '2013-12-17T23:58:54+09:00',
         'created_epoch' => 1387292334,
         'user' => 'aereal',
         'permalink' => 'http://b.hatena.ne.jp/aereal/20131217#bookmark-150288466',
-        'private' => false,
-        'tags' => [
-          'hatena',
-        ],
-      }
+        'private' => request_params['private'],
+        'tags' => request_params['tags'],
+      )
     }
 
     before do
@@ -126,7 +125,7 @@ describe Hatena::Bookmark::Restful::V1 do
     let(:api_path) { "/1/my/bookmark" }
 
     let(:bookmark) {
-      {
+      Hatena::Bookmark::Restful::V1::Bookmark.new_from_response(
         'comment' => ' Heroku の Deploy Hooks で HipChat がサポートされていた',
         'created_datetime' => '2013-12-17T23:58:54+09:00',
         'created_epoch' => 1387292334,
@@ -136,10 +135,10 @@ describe Hatena::Bookmark::Restful::V1 do
         'tags' => [
           'heroku',
         ],
-      }
+      )
     }
 
-    let(:response_body) { JSON.dump(bookmark) }
+    let(:response_body) { JSON.dump(bookmark.to_hash) }
 
     let(:entry_url) { "https://devcenter.heroku.com/articles/deploy-hooks" }
 
@@ -153,17 +152,17 @@ describe Hatena::Bookmark::Restful::V1 do
     let(:api_path) { "/1/entry" }
 
     let(:entry) {
-      {
+      Hatena::Bookmark::Restful::V1::Entry.new_from_response(
         'title'                    => %|aereal's portfolio - aereal.org|,
         'url'                      => 'http://aereal.org/',
         'entry_url'                => 'http://b.hatena.ne.jp/entry/aereal.org/',
         'count'                    => 3,
         'favicon_url'              => 'http://cdn-ak.favicon.st-hatena.com/?url=http%3A%2F%2Faereal.org%2F',
         'smartphone_app_entry_url' => 'http://b.hatena.ne.jp/bookmarklet.touch?mode=comment&iphone_app=1&url=http%3A%2F%2Faereal.org%2F',
-      }
+      )
     }
 
-    let(:response_body) { JSON.dump(entry) }
+    let(:response_body) { JSON.generate(entry.to_hash) }
 
     let(:entry_url) { 'http://aereal.org/' }
 
@@ -176,29 +175,21 @@ describe Hatena::Bookmark::Restful::V1 do
     include_context "send a HTTP request to API"
     let(:api_path) { "/1/my/tags" }
 
-    let(:tags) {
-      {
-        'tags' => [
-          {
-            'modified_datetime' => '2012-10-13T17:49:14',
-            'modified_epoch'    => 1350150554,
-            'count'             => 3,
-            'tag'               => 'perl',
-          },
-          {
-            'modified_datetime' => '2011-06-15T05:41:01',
-            'modified_epoch'    => 1308116461,
-            'count'             => 10,
-            'tag'               => 'ruby',
-          }
-        ]
-      }
+    let(:tag) {
+      Hatena::Bookmark::Restful::V1::Tag.new_from_response(
+        'modified_datetime' => '2011-06-15T05:41:01',
+        'modified_epoch'    => 1308116461,
+        'count'             => 10,
+        'tag'               => 'ruby',
+      )
     }
 
-    let(:response_body) { JSON.dump(tags) }
+    let(:tags_response) { { 'tags' => [tag.to_hash] } }
+
+    let(:response_body) { JSON.generate(tags_response) }
 
     it "is valid response from API" do
-      expect(client.my_tags).to eq(tags)
+      expect(client.my_tags).to eq([ tag ])
     end
   end
 
@@ -206,7 +197,7 @@ describe Hatena::Bookmark::Restful::V1 do
     include_context "send a HTTP request to API"
 
     let(:user) {
-      {
+      Hatena::Bookmark::Restful::V1::User.new_from_response(
         'name'                => 'aereal',
         'plususer'            => true,
         'private'             => false,
@@ -214,10 +205,10 @@ describe Hatena::Bookmark::Restful::V1 do
         'is_oauth_evernote'   => true,
         'is_oauth_facebook'   => true,
         'is_oauth_mixi_check' => false,
-      }
+      )
     }
 
-    let(:response_body) { JSON.dump(user) }
+    let(:response_body) { JSON.dump(user.to_hash) }
 
     let(:api_path) { "/1/my" }
 

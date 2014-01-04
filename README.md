@@ -1,3 +1,6 @@
+ * `master` status: ![master Build Status](https://travis-ci.org/aereal/hatena-bookmark-restful.png?branch=master)
+ * `develop` status: ![develop Build Status](https://travis-ci.org/aereal/hatena-bookmark-restful.png?branch=develop)
+
 # Hatena::Bookmark::Restful
 
 A client library for [Hatena::Bookmark RESTful API](http://developer.hatena.ne.jp/ja/documents/bookmark/apis/rest).

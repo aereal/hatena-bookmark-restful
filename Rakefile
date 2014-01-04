@@ -1,6 +1,7 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 require "semantic"
+require "yard"
 
 RSpec::Core::RakeTask.new(:spec)
 
@@ -54,4 +55,10 @@ namespace :version do
       end
     end
   end
+end
+
+YARD::Rake::YardocTask.new(:doc) do |t|
+  spec = Gem::Specification.find_by_name('hatena-bookmark-restful')
+  t.files = spec.lib_files
+  t.options = %w( --readme README.md )
 end
