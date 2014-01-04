@@ -41,7 +41,7 @@ describe Hatena::Bookmark::Restful::V1 do
       [
         200,
         {},
-        JSON.dump(bookmark)
+        JSON.dump(bookmark.to_hash)
       ]
     }
 
@@ -70,7 +70,7 @@ describe Hatena::Bookmark::Restful::V1 do
     }
 
     let(:bookmark) {
-      {
+      Hatena::Bookmark::Restful::V1::Bookmark.new_from_response(
         'comment' => request_params[:comment],
         'created_datetime' => '2013-12-17T23:58:54+09:00',
         'created_epoch' => 1387292334,
@@ -80,7 +80,7 @@ describe Hatena::Bookmark::Restful::V1 do
         'tags' => [
           'hatena',
         ],
-      }
+      )
     }
 
     before do
@@ -130,7 +130,7 @@ describe Hatena::Bookmark::Restful::V1 do
     let(:api_path) { "/1/my/bookmark" }
 
     let(:bookmark) {
-      {
+      Hatena::Bookmark::Restful::V1::Bookmark.new_from_response(
         'comment' => ' Heroku の Deploy Hooks で HipChat がサポートされていた',
         'created_datetime' => '2013-12-17T23:58:54+09:00',
         'created_epoch' => 1387292334,
@@ -140,10 +140,10 @@ describe Hatena::Bookmark::Restful::V1 do
         'tags' => [
           'heroku',
         ],
-      }
+      )
     }
 
-    let(:response_body) { JSON.dump(bookmark) }
+    let(:response_body) { JSON.dump(bookmark.to_hash) }
 
     let(:entry_url) { "https://devcenter.heroku.com/articles/deploy-hooks" }
 

@@ -4,6 +4,7 @@ require 'json'
 require 'hatena/bookmark/restful/v1/user'
 require 'hatena/bookmark/restful/v1/tag'
 require 'hatena/bookmark/restful/v1/entry'
+require 'hatena/bookmark/restful/v1/bookmark'
 
 module Hatena
   module Bookmark
@@ -65,9 +66,11 @@ class Hatena::Bookmark::Restful::V1
     entry = Entry.new_from_response(attrs)
   end
 
+  # @return [Bookmark]
   def bookmark(url)
     res = connection.get("/#{api_version}/my/bookmark", url: url)
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    bookmark = Bookmark.new_from_response(attrs)
   end
 
   def delete_bookmark(url)
@@ -75,9 +78,11 @@ class Hatena::Bookmark::Restful::V1
     res.success?
   end
 
+  # @return [Bookmark]
   def create_bookmark(bookmark_params)
     res = connection.post("/#{api_version}/my/bookmark", bookmark_params)
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    bookmark = Bookmark.new_from_response(attrs)
   end
 
   def api_version
