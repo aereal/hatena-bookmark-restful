@@ -12,11 +12,32 @@ class Hatena::Bookmark::Restful::V1
   BASE_URI = 'http://api.b.hatena.ne.jp'
   API_VERSION = '1'
 
-  def initialize(credentials = {})
-    @consumer_key        = credentials.fetch(:consumer_key)
-    @consumer_secret     = credentials.fetch(:consumer_secret)
-    @access_token        = credentials.fetch(:access_token)
-    @access_token_secret = credentials.fetch(:access_token_secret)
+  class Credentials
+    # @!attribute [rw] consumer_key
+    #   @return [String]
+    # @!attribute [rw] consumer_secret
+    #   @return [String]
+    # @!attribute [rw] access_token
+    #   @return [String]
+    # @!attribute [rw] access_token_secret
+    #   @return [String]
+    attr_accessor :consumer_key, :consumer_secret, :access_token, :access_token_secret
+
+    # @param [Hash] attributes
+    # @option attributes [String] :consumer_key
+    # @option attributes [String] :consumer_secret
+    # @option attributes [String] :access_token
+    # @option attributes [String] :access_token_secret
+    def initialize(attributes)
+      @consumer_key        = attributes.fetch(:consumer_key)
+      @consumer_secret     = attributes.fetch(:consumer_secret)
+      @access_token        = attributes.fetch(:access_token)
+      @access_token_secret = attributes.fetch(:access_token_secret)
+    end
+  end
+
+  def initialize(credentials)
+    @credentials = credentials
   end
 
   def my
@@ -63,10 +84,10 @@ class Hatena::Bookmark::Restful::V1
     @connection ||= Faraday.new(url: base_uri) do |faraday|
       faraday.request :url_encoded
       faraday.request :oauth,
-        consumer_key:    @consumer_key,
-        consumer_secret: @consumer_secret,
-        token:           @access_token,
-        token_secret:    @access_token_secret
+        consumer_key:    @credentials.consumer_key,
+        consumer_secret: @credentials.consumer_secret,
+        token:           @credentials.access_token,
+        token_secret:    @credentials.access_token_secret
       faraday.adapter Faraday.default_adapter
     end
   end

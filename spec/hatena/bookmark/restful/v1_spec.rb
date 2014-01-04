@@ -30,7 +30,8 @@ shared_context "send a HTTP request to API" do
 end
 
 describe Hatena::Bookmark::Restful::V1 do
-  let(:client) { Hatena::Bookmark::Restful::V1.new(consumer_key: '', consumer_secret: '', access_token: '', access_token_secret: '') }
+  let(:credentials) { Hatena::Bookmark::Restful::V1::Credentials.new(consumer_key: '', consumer_secret: '', access_token: '', access_token_secret: '') }
+  let(:client) { Hatena::Bookmark::Restful::V1.new(credentials) }
 
   describe "#create_bookmark" do
     let(:stubbed_response) {
