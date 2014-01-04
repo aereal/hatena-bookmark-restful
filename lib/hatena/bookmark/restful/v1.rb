@@ -1,6 +1,10 @@
 require 'faraday'
 require 'faraday_middleware'
 require 'json'
+require 'hatena/bookmark/restful/v1/user'
+require 'hatena/bookmark/restful/v1/tag'
+require 'hatena/bookmark/restful/v1/entry'
+require 'hatena/bookmark/restful/v1/bookmark'
 
 module Hatena
   module Bookmark
@@ -12,31 +16,61 @@ class Hatena::Bookmark::Restful::V1
   BASE_URI = 'http://api.b.hatena.ne.jp'
   API_VERSION = '1'
 
-  def initialize(credentials = {})
-    @consumer_key        = credentials.fetch(:consumer_key)
-    @consumer_secret     = credentials.fetch(:consumer_secret)
-    @access_token        = credentials.fetch(:access_token)
-    @access_token_secret = credentials.fetch(:access_token_secret)
+  class Credentials
+    # @!attribute [rw] consumer_key
+    #   @return [String]
+    # @!attribute [rw] consumer_secret
+    #   @return [String]
+    # @!attribute [rw] access_token
+    #   @return [String]
+    # @!attribute [rw] access_token_secret
+    #   @return [String]
+    attr_accessor :consumer_key, :consumer_secret, :access_token, :access_token_secret
+
+    # @param [Hash] attributes
+    # @option attributes [String] :consumer_key
+    # @option attributes [String] :consumer_secret
+    # @option attributes [String] :access_token
+    # @option attributes [String] :access_token_secret
+    def initialize(attributes)
+      @consumer_key        = attributes.fetch(:consumer_key)
+      @consumer_secret     = attributes.fetch(:consumer_secret)
+      @access_token        = attributes.fetch(:access_token)
+      @access_token_secret = attributes.fetch(:access_token_secret)
+    end
   end
 
+  def initialize(credentials)
+    @credentials = credentials
+  end
+
+  # @return [User]
   def my
     res = connection.get("/#{api_version}/my")
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    user = User.new_from_response(attrs)
   end
 
+  # @return [<Tag>]
   def my_tags
     res = connection.get("/#{api_version}/my/tags")
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    raw_tags = attrs.fetch('tags')
+    tags = raw_tags.map {|t| Tag.new_from_response(t) }
   end
 
+  # @return [Entry]
   def entry(url)
     res = connection.get("/#{api_version}/entry", url: url)
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    entry = Entry.new_from_response(attrs)
   end
 
+  # @return [Bookmark]
   def bookmark(url)
     res = connection.get("/#{api_version}/my/bookmark", url: url)
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    bookmark = Bookmark.new_from_response(attrs)
   end
 
   def delete_bookmark(url)
@@ -44,9 +78,11 @@ class Hatena::Bookmark::Restful::V1
     res.success?
   end
 
+  # @return [Bookmark]
   def create_bookmark(bookmark_params)
     res = connection.post("/#{api_version}/my/bookmark", bookmark_params)
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    bookmark = Bookmark.new_from_response(attrs)
   end
 
   def api_version
@@ -63,10 +99,10 @@ class Hatena::Bookmark::Restful::V1
     @connection ||= Faraday.new(url: base_uri) do |faraday|
       faraday.request :url_encoded
       faraday.request :oauth,
-        consumer_key:    @consumer_key,
-        consumer_secret: @consumer_secret,
-        token:           @access_token,
-        token_secret:    @access_token_secret
+        consumer_key:    @credentials.consumer_key,
+        consumer_secret: @credentials.consumer_secret,
+        token:           @credentials.access_token,
+        token_secret:    @credentials.access_token_secret
       faraday.adapter Faraday.default_adapter
     end
   end
