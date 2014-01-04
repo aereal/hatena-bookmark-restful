@@ -3,6 +3,7 @@
 require 'hatena/bookmark/restful/v1'
 require 'hatena/bookmark/restful/v1/user'
 require 'hatena/bookmark/restful/v1/tag'
+require 'hatena/bookmark/restful/v1/entry'
 require 'json'
 
 shared_context "send a HTTP request to API" do
@@ -156,17 +157,17 @@ describe Hatena::Bookmark::Restful::V1 do
     let(:api_path) { "/1/entry" }
 
     let(:entry) {
-      {
+      Hatena::Bookmark::Restful::V1::Entry.new_from_response(
         'title'                    => %|aereal's portfolio - aereal.org|,
         'url'                      => 'http://aereal.org/',
         'entry_url'                => 'http://b.hatena.ne.jp/entry/aereal.org/',
         'count'                    => 3,
         'favicon_url'              => 'http://cdn-ak.favicon.st-hatena.com/?url=http%3A%2F%2Faereal.org%2F',
         'smartphone_app_entry_url' => 'http://b.hatena.ne.jp/bookmarklet.touch?mode=comment&iphone_app=1&url=http%3A%2F%2Faereal.org%2F',
-      }
+      )
     }
 
-    let(:response_body) { JSON.dump(entry) }
+    let(:response_body) { JSON.generate(entry.to_hash) }
 
     let(:entry_url) { 'http://aereal.org/' }
 
