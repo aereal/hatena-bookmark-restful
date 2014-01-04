@@ -1,9 +1,6 @@
 # encoding: utf-8
 
 require 'hatena/bookmark/restful/v1'
-require 'hatena/bookmark/restful/v1/user'
-require 'hatena/bookmark/restful/v1/tag'
-require 'hatena/bookmark/restful/v1/entry'
 require 'json'
 
 shared_context "send a HTTP request to API" do
@@ -76,10 +73,8 @@ describe Hatena::Bookmark::Restful::V1 do
         'created_epoch' => 1387292334,
         'user' => 'aereal',
         'permalink' => 'http://b.hatena.ne.jp/aereal/20131217#bookmark-150288466',
-        'private' => false,
-        'tags' => [
-          'hatena',
-        ],
+        'private' => request_params['private'],
+        'tags' => request_params['tags'],
       )
     }
 
