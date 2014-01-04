@@ -2,6 +2,7 @@
 
 require 'hatena/bookmark/restful/v1'
 require 'hatena/bookmark/restful/v1/user'
+require 'hatena/bookmark/restful/v1/tag'
 require 'json'
 
 shared_context "send a HTTP request to API" do
@@ -178,29 +179,21 @@ describe Hatena::Bookmark::Restful::V1 do
     include_context "send a HTTP request to API"
     let(:api_path) { "/1/my/tags" }
 
-    let(:tags) {
-      {
-        'tags' => [
-          {
-            'modified_datetime' => '2012-10-13T17:49:14',
-            'modified_epoch'    => 1350150554,
-            'count'             => 3,
-            'tag'               => 'perl',
-          },
-          {
-            'modified_datetime' => '2011-06-15T05:41:01',
-            'modified_epoch'    => 1308116461,
-            'count'             => 10,
-            'tag'               => 'ruby',
-          }
-        ]
-      }
+    let(:tag) {
+      Hatena::Bookmark::Restful::V1::Tag.new_from_response(
+        'modified_datetime' => '2011-06-15T05:41:01',
+        'modified_epoch'    => 1308116461,
+        'count'             => 10,
+        'tag'               => 'ruby',
+      )
     }
 
-    let(:response_body) { JSON.dump(tags) }
+    let(:tags_response) { { 'tags' => [tag.to_hash] } }
+
+    let(:response_body) { JSON.generate(tags_response) }
 
     it "is valid response from API" do
-      expect(client.my_tags).to eq(tags)
+      expect(client.my_tags).to eq([ tag ])
     end
   end
 
