@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'hatena/bookmark/restful/v1'
+require 'hatena/bookmark/restful/v1/user'
 require 'json'
 
 shared_context "send a HTTP request to API" do
@@ -207,7 +208,7 @@ describe Hatena::Bookmark::Restful::V1 do
     include_context "send a HTTP request to API"
 
     let(:user) {
-      {
+      Hatena::Bookmark::Restful::V1::User.new_from_response(
         'name'                => 'aereal',
         'plususer'            => true,
         'private'             => false,
@@ -215,10 +216,10 @@ describe Hatena::Bookmark::Restful::V1 do
         'is_oauth_evernote'   => true,
         'is_oauth_facebook'   => true,
         'is_oauth_mixi_check' => false,
-      }
+      )
     }
 
-    let(:response_body) { JSON.dump(user) }
+    let(:response_body) { JSON.dump(user.to_hash) }
 
     let(:api_path) { "/1/my" }
 

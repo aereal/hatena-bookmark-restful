@@ -1,6 +1,7 @@
 require 'faraday'
 require 'faraday_middleware'
 require 'json'
+require 'hatena/bookmark/restful/v1/user'
 
 module Hatena
   module Bookmark
@@ -40,9 +41,11 @@ class Hatena::Bookmark::Restful::V1
     @credentials = credentials
   end
 
+  # @return [User]
   def my
     res = connection.get("/#{api_version}/my")
-    JSON.parse(res.body)
+    attrs = JSON.parse(res.body)
+    user = User.new_from_response(attrs)
   end
 
   def my_tags
