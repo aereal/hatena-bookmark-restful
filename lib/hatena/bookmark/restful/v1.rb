@@ -73,6 +73,7 @@ class Hatena::Bookmark::Restful::V1
     bookmark = Bookmark.new_from_response(attrs)
   end
 
+  # @return [Boolean]
   def delete_bookmark(url)
     res = connection.delete("/#{api_version}/my/bookmark", url: url)
     res.success?
