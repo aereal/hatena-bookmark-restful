@@ -1,4 +1,8 @@
 ---
+sudo: false
+cache:
+  directories:
+    - vendor/bundle
 language: ruby
 rvm:
   - 2.1.10
