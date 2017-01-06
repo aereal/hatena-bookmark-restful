@@ -113,7 +113,7 @@ describe Hatena::Bookmark::Restful::V1 do
     end
 
     it "successfully delete a bookmark" do
-      expect(client.delete_bookmark(entry_url)).to be_true
+      expect(client.delete_bookmark(entry_url)).to be_truthy
     end
   end
 
