@@ -99,11 +99,13 @@ class Hatena::Bookmark::Restful::V1
   def connection
     @connection ||= Faraday.new(url: base_uri) do |faraday|
       faraday.request :url_encoded
+      faraday.options.params_encoder = Faraday::FlatParamsEncoder
       faraday.request :oauth,
         consumer_key:    @credentials.consumer_key,
         consumer_secret: @credentials.consumer_secret,
         token:           @credentials.access_token,
         token_secret:    @credentials.access_token_secret
+      faraday.headers["User-Agent"] = "hatena-bookmark-restful"
       faraday.adapter Faraday.default_adapter
     end
   end
