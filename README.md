@@ -30,12 +30,13 @@ CONSUMER_SECRET     = 'YOUR_CONSUMER_SECRET'
 ACCESS_TOKEN        = 'YOUR_ACCESS_TOKEN'
 ACCESS_TOKEN_SECRET = 'YOUR_ACCESS_TOKEN_SECRET'
 
-client = Hatena::Bookmark::Restful::V1.new(
+credentials = Hatena::Bookmark::Restful::V1::Credentials.new(
   consumer_key:        CONSUMER_KEY,
   consumer_secret:     CONSUMER_SECRET,
   access_token:        ACCESS_TOKEN,
   access_token_secret: ACCESS_TOKEN_SECRET
 )
+client = Hatena::Bookmark::Restful::V1.new(credentials)
 
 client.bookmark('http://www.hatena.ne.jp/')
 ```
