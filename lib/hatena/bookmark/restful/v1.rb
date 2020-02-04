@@ -13,7 +13,7 @@ module Hatena
 end
 
 class Hatena::Bookmark::Restful::V1
-  BASE_URI = 'http://api.b.hatena.ne.jp'
+  BASE_URI = 'https://api.b.hatena.ne.jp'
   API_VERSION = '1'
 
   class Credentials
